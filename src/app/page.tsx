@@ -238,9 +238,9 @@ export default function Home() {
                 {urls.length === 0 && <li className="text-gray-400">No URLs yet.</li>}
                 {urls.map((u) => (
                   <li key={u.id} className="flex items-center justify-between bg-gray-100 dark:bg-gray-800 rounded p-2">
-                    <span className="truncate">{BACKEND_URL}/{u.id}</span>
+                    <span className="truncate">{u.short_url || `${BACKEND_URL}/${u.id}`}</span>
                     <span className="text-xs text-gray-500 ml-2">Visits: {u.visit_count || 0}</span>
-                    <button className="ml-2 text-blue-600 hover:underline" onClick={() => handleCopy(`${BACKEND_URL}/${u.id}`)}>Copy</button>
+                    <button className="ml-2 text-blue-600 hover:underline" onClick={() => handleCopy(u.short_url || `${BACKEND_URL}/${u.id}`)}>Copy</button>
                     <button className="ml-2 text-red-500 hover:underline" onClick={() => handleDelete(u.id)}>Delete</button>
                   </li>
                 ))}
