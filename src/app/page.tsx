@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect, FormEvent } from "react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://backend-url-shortner-kiu1.onrender.com";
 const BACKEND_URL = "https://backend-url-shortner-kiu1.onrender.com";
+const API_URL = BACKEND_URL;
 
 export default function Home() {
   const [view, setView] = useState<'login' | 'register' | 'dashboard'>("login");
