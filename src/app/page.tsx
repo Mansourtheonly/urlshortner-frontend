@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -11,7 +11,7 @@ export default function Home() {
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [urls, setUrls] = useState<any[]>([]);
+  const [urls, setUrls] = useState<Url[]>([]);
   const [longUrl, setLongUrl] = useState("");
   const [shortening, setShortening] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
@@ -41,16 +41,20 @@ export default function Home() {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch URLs");
-      const data = await res.json();
+      const data: Url[] = await res.json();
       setUrls(data);
-    } catch (e: any) {
-      setError(e.message || "Error fetching URLs");
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message || "Error fetching URLs");
+      } else {
+        setError("Error fetching URLs");
+      }
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleLogin(e: any) {
+  async function handleLogin(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -67,14 +71,18 @@ export default function Home() {
       setView("dashboard");
       setUsername("");
       setPassword("");
-    } catch (e: any) {
-      setError(e.message || "Login failed");
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message || "Login failed");
+      } else {
+        setError("Login failed");
+      }
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleRegister(e: any) {
+  async function handleRegister(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -95,14 +103,18 @@ export default function Home() {
       setUsername("");
       setPassword("");
       setConfirmPassword("");
-    } catch (e: any) {
-      setError(e.message || "Registration failed");
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message || "Registration failed");
+      } else {
+        setError("Registration failed");
+      }
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleShorten(e: any) {
+  async function handleShorten(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setShortening(true);
     setError("");
@@ -119,8 +131,12 @@ export default function Home() {
       setLongUrl("");
       setSuccessMsg("URL shortened!");
       fetchUrls();
-    } catch (e: any) {
-      setError(e.message || "Shorten failed");
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message || "Shorten failed");
+      } else {
+        setError("Shorten failed");
+      }
     } finally {
       setShortening(false);
     }
@@ -137,8 +153,12 @@ export default function Home() {
       });
       if (!res.ok) throw new Error("Delete failed");
       fetchUrls();
-    } catch (e: any) {
-      setError(e.message || "Delete failed");
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message || "Delete failed");
+      } else {
+        setError("Delete failed");
+      }
     } finally {
       setLoading(false);
     }
@@ -231,4 +251,11 @@ export default function Home() {
       <footer className="mt-8 text-gray-400 text-xs">&copy; {new Date().getFullYear()} URL Shortener</footer>
     </div>
   );
+}
+
+interface Url {
+  id: string;
+  long_url: string;
+  short_url: string;
+  visit_count: number;
 }
